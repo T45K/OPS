@@ -8,7 +8,7 @@ class FileASTVisitor(private val fileAST: FileAST) : ASTVisitor() {
     val methods: MutableList<Method> = mutableListOf()
 
     override fun visit(node: MethodDeclaration): Boolean {
-        if (!isHadToCheck(node.parent, node)) {
+        if (!isHadToCheck(node)) {
             return false
         }
 
@@ -17,8 +17,8 @@ class FileASTVisitor(private val fileAST: FileAST) : ASTVisitor() {
         return false
     }
 
-    private fun isHadToCheck(astNode: ASTNode, methodDeclaration: MethodDeclaration): Boolean {
-        return astNode is TypeDeclaration && !astNode.isInterface && methodDeclaration.modifiers and Modifier.ABSTRACT != 1
+    private fun isHadToCheck(methodDeclaration: MethodDeclaration): Boolean {
+        return methodDeclaration.body != null && methodDeclaration.modifiers and Modifier.ABSTRACT == 0
     }
 }
 
