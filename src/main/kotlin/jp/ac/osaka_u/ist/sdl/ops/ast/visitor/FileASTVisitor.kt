@@ -26,7 +26,6 @@ class FileASTVisitor(private val fileAST: FileAST) : ASTVisitor() {
                 .map { it.value }
                 .sortedBy { it.declared }
                 .map { it.referenced }
-                .toList()
 
         return false
     }
