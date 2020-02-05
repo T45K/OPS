@@ -24,7 +24,7 @@ class FileASTVisitorTest {
     fun testTakeOutMethods() {
         val fileAST: FileAST = constructFileAST(Paths.get(PATH))
         methods = takeOutMethods(fileAST)
-        assertEquals(2, methods.size)
+        assertEquals(3, methods.size)
     }
 
     @Test
