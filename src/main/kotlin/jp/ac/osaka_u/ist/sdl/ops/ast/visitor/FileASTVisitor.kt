@@ -20,12 +20,13 @@ class FileASTVisitor(private val fileAST: FileAST) : ASTVisitor() {
             return false
         }
 
-        val methodVisitor = MethodVisitor(node.parameters() as List<SingleVariableDeclaration>)
+        @Suppress("UNCHECKED_CAST") val methodVisitor = MethodVisitor(node.parameters() as List<SingleVariableDeclaration>)
         node.accept(methodVisitor)
         method.order = methodVisitor.orders
                 .map { it.value }
                 .sortedBy { it.declared }
                 .map { it.referenced }
+        methods.add(method)
 
         return false
     }
