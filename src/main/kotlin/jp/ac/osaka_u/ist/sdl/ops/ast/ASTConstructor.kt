@@ -11,7 +11,6 @@ import java.nio.file.Paths
 import java.util.HashSet
 import kotlin.streams.toList
 
-
 fun constructFileASTs(projectPath: Path): Set<FileAST>? {
     val parser: ASTParser = ASTParser.newParser(AST.JLS13)
     val fileASTs: MutableSet<FileAST> = HashSet()
@@ -20,7 +19,7 @@ fun constructFileASTs(projectPath: Path): Set<FileAST>? {
             fileASTs.add(FileAST(Paths.get(sourceFilePath), ast))
         }
     }
-    val javaFiles = getTargetFiles(projectPath)
+    val javaFiles: Array<String> = getTargetFiles(projectPath)
     parser.createASTs(javaFiles, null, arrayOf(), requestor, NullProgressMonitor())
     return fileASTs
 }
