@@ -4,9 +4,7 @@ import org.eclipse.jdt.core.dom.ASTVisitor
 import org.eclipse.jdt.core.dom.SimpleName
 import org.eclipse.jdt.core.dom.SingleVariableDeclaration
 
-class MethodVisitor(
-        parameters: List<SingleVariableDeclaration>
-) : ASTVisitor() {
+class MethodVisitor(parameters: List<SingleVariableDeclaration>) : ASTVisitor() {
     private var index = 0
     val orders: Map<String, Locations>
 
@@ -18,7 +16,7 @@ class MethodVisitor(
 
     override fun visit(node: SimpleName): Boolean {
         val locations: Locations = orders[node.identifier] ?: return false
-        if (locations.referenced != -1) {
+        if (locations.referenced == -1) {
             locations.referenced = index++
         }
 
