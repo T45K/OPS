@@ -2,23 +2,33 @@ package jp.ac.osaka_u.ist.sdl.ops.ast.visitor
 
 import jp.ac.osaka_u.ist.sdl.ops.ast.FileAST
 import jp.ac.osaka_u.ist.sdl.ops.entity.Method
-import org.eclipse.jdt.core.dom.*
+import org.eclipse.jdt.core.dom.ASTVisitor
+import org.eclipse.jdt.core.dom.MethodDeclaration
+import org.eclipse.jdt.core.dom.SingleVariableDeclaration
 
 class FileASTVisitor(private val fileAST: FileAST) : ASTVisitor() {
     val methods: MutableList<Method> = mutableListOf()
 
     override fun visit(node: MethodDeclaration): Boolean {
-        if (!isHadToCheck(node)) {
+        if (node.body == null) {
             return false
         }
 
-        val methodVisitor = MethodVisitor(fileAST.path, methods)
-        node.accept(methodVisitor)
-        return false
-    }
+        val method = Method(fileAST.path, node.name.identifier, node.isConstructor, node.parameters().size)
+        if (node.parameters().size <= 1) {
+            methods.add(method)
+            return false
+        }
 
-    private fun isHadToCheck(methodDeclaration: MethodDeclaration): Boolean {
-        return methodDeclaration.body != null && methodDeclaration.modifiers and Modifier.ABSTRACT == 0
+        val methodVisitor = MethodVisitor(node.parameters() as List<SingleVariableDeclaration>)
+        node.accept(methodVisitor)
+        method.order = methodVisitor.orders
+                .map { it.value }
+                .sortedBy { it.declared }
+                .map { it.referenced }
+                .toList()
+
+        return false
     }
 }
 
