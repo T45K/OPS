@@ -10,7 +10,7 @@ class FileASTVisitor(private val fileAST: FileAST) : ASTVisitor() {
     val methods: MutableList<Method> = mutableListOf()
 
     override fun visit(node: MethodDeclaration): Boolean {
-        if (node.body == null) {
+        if (node.body == null || node.body.statements().isEmpty()) {
             return false
         }
 
