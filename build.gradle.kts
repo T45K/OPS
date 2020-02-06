@@ -25,6 +25,9 @@ dependencies {
     // Use args4j
     implementation("args4j:args4j:2.33")
 
+    // Use SQLite
+    implementation("org.xerial:sqlite-jdbc:3.30.1")
+
     // Use the Kotlin JDK 8 standard library.
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
