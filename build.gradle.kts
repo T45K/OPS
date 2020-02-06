@@ -42,3 +42,16 @@ application {
     // Define the main class for the application.
     mainClassName = "jp.ac.osaka_u.ist.sdl.ops.AppKt"
 }
+
+val jar by tasks.getting(Jar::class) {
+    manifest {
+        attributes["Main-Class"] = "jp.ac.osaka_u.ist.sdl.ops.AppKt"
+    }
+
+    from(
+            configurations.compile.get().map {
+                if (it.isDirectory) it else zipTree(it)
+            }
+    )
+    exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
+}
