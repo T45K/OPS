@@ -13,7 +13,7 @@ class SQL {
 
     init {
         val statement: Statement = connection.createStatement()
-        statement.executeUpdate("create table if not exists method (name string, isConstructor boolean, numOfParams integer, id integer primary key autoincrement)")
+        statement.executeUpdate("create table if not exists method (name string, isConstructor integer, numOfParams integer, id integer primary key autoincrement)")
         statement.executeUpdate("create table if not exists param (id integer, declaredOrder integer, referredOrder integer)")
     }
 
@@ -37,10 +37,12 @@ class SQL {
     private fun insertMethod(method: Method): Int {
         val statement: Statement = connection.createStatement()
         val name = "${method.path}#${method.name}"
-        statement.executeUpdate("insert into method values('$name', ${method.isConstructor}, ${method.numOfParams})")
+        val isConstructor: Int = if (method.isConstructor) 1 else 0
+        statement.executeUpdate("insert into method(name, isConstructor, numOfParams) values('$name', $isConstructor, ${method.numOfParams})")
         statement.close()
 
         val resultSet: ResultSet = statement.generatedKeys
+        resultSet.next()
         return resultSet.getInt("id")
     }
 
