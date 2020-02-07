@@ -3,6 +3,7 @@ package jp.ac.osaka_u.ist.sdl.ops
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import jp.ac.osaka_u.ist.sdl.ops.ast.constructFileASTs
+import jp.ac.osaka_u.ist.sdl.ops.ast.visitor.FileASTVisitor
 import jp.ac.osaka_u.ist.sdl.ops.ast.visitor.takeOutMethods
 import jp.ac.osaka_u.ist.sdl.ops.entity.Method
 import jp.ac.osaka_u.ist.sdl.ops.sql.SQL
@@ -25,9 +26,7 @@ fun main(args: Array<String>) {
             .subscribeOn(Schedulers.computation())
             .map { constructFileASTs(it) }
             .flatMap {
-                Observable.fromIterable(
-                        it.flatMap { fileAST -> takeOutMethods(fileAST) }
-                )
+                Observable.fromIterable(it.flatMap { fileAST -> takeOutMethods(fileAST) })
             }
             .toList()
             .blockingGet()
