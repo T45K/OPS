@@ -38,12 +38,16 @@ class SQL {
         val statement: Statement = connection.createStatement()
         val name = "${method.path}#${method.name}"
         val isConstructor: Int = if (method.isConstructor) 1 else 0
-        statement.executeUpdate("insert into method(name, isConstructor, numOfParams) values('$name', $isConstructor, ${method.numOfParams})")
-        statement.close()
+        statement.executeUpdate("insert into method(name, isConstructor, numOfParams) values('$name', $isConstructor, ${method.numOfParams})", Statement.RETURN_GENERATED_KEYS)
 
         val resultSet: ResultSet = statement.generatedKeys
         resultSet.next()
-        return resultSet.getInt("id")
+        val id: Int = resultSet.getInt("id")
+
+        resultSet.close()
+        statement.close()
+
+        return id
     }
 
     fun close() {
