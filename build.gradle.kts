@@ -55,3 +55,9 @@ val jar by tasks.getting(Jar::class) {
     )
     exclude("META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA")
 }
+
+val run by tasks.getting(JavaExec::class) {
+    if (project.hasProperty("args")) {
+        args = (project.property("args") as String).split(" ")
+    }
+}
