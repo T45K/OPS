@@ -14,22 +14,22 @@ repositories {
 
 dependencies {
     // Align versions of all Kotlin components
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
+    compile(platform("org.jetbrains.kotlin:kotlin-bom"))
 
     // Use JDK
-    implementation("org.eclipse.jdt:org.eclipse.jdt.core:3.20.0")
+    compile("org.eclipse.jdt:org.eclipse.jdt.core:3.20.0")
 
     // Use Rx
-    implementation("io.reactivex.rxjava2:rxkotlin:2.4.0")
+    compile("io.reactivex.rxjava2:rxkotlin:2.4.0")
 
     // Use args4j
-    implementation("args4j:args4j:2.33")
+    compile("args4j:args4j:2.33")
 
     // Use SQLite
-    implementation("org.xerial:sqlite-jdbc:3.30.1")
+    compile("org.xerial:sqlite-jdbc:3.30.1")
 
     // Use the Kotlin JDK 8 standard library.
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
