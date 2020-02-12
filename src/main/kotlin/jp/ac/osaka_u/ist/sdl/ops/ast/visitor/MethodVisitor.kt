@@ -5,7 +5,7 @@ import com.github.javaparser.ast.body.Parameter
 import com.github.javaparser.ast.expr.SimpleName
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 
-class MethodVisitor(parameterNames: NodeList<Parameter>) : VoidVisitorAdapter<Void>() {
+class MethodVisitor(parameterNames: NodeList<Parameter>) : VoidVisitorAdapter<Void?>() {
     private var index = 0
     val orders: Map<String, Locations>
 
@@ -15,7 +15,7 @@ class MethodVisitor(parameterNames: NodeList<Parameter>) : VoidVisitorAdapter<Vo
                 .toMap()
     }
 
-    override fun visit(node: SimpleName, arg: Void) {
+    override fun visit(node: SimpleName, arg: Void?) {
         val locations: Locations = orders[node.identifier] ?: return
         if (locations.referenced == -1) {
             locations.referenced = index++

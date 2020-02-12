@@ -5,10 +5,10 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 import jp.ac.osaka_u.ist.sdl.ops.ast.FileAST
 import jp.ac.osaka_u.ist.sdl.ops.entity.Method
 
-class FileASTVisitor(private val fileAST: FileAST) : VoidVisitorAdapter<Void>() {
+class FileASTVisitor(private val fileAST: FileAST) : VoidVisitorAdapter<Void?>() {
     val methods: MutableList<Method> = mutableListOf()
 
-    override fun visit(node: MethodDeclaration, arg: Void) {
+    override fun visit(node: MethodDeclaration, arg: Void?) {
         if (node.body.isEmpty || node.body.get().isEmpty) {
             return
         }
