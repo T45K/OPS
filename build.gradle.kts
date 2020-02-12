@@ -16,8 +16,8 @@ dependencies {
     // Align versions of all Kotlin components
     compile(platform("org.jetbrains.kotlin:kotlin-bom"))
 
-    // Use JDK
-    compile("org.eclipse.jdt:org.eclipse.jdt.core:3.20.0")
+    // Use java-parser
+    compile("com.github.javaparser:javaparser-core:3.15.12")
 
     // Use Rx
     compile("io.reactivex.rxjava2:rxkotlin:2.4.0")

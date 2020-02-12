@@ -1,40 +1,57 @@
 package jp.ac.osaka_u.ist.sdl.ops.ast.visitor
 
+import com.github.javaparser.ast.body.ConstructorDeclaration
+import com.github.javaparser.ast.body.MethodDeclaration
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 import jp.ac.osaka_u.ist.sdl.ops.ast.FileAST
 import jp.ac.osaka_u.ist.sdl.ops.entity.Method
-import org.eclipse.jdt.core.dom.ASTVisitor
-import org.eclipse.jdt.core.dom.MethodDeclaration
-import org.eclipse.jdt.core.dom.SingleVariableDeclaration
 
-class FileASTVisitor(private val fileAST: FileAST) : ASTVisitor() {
+class FileASTVisitor(private val fileAST: FileAST) : VoidVisitorAdapter<Void?>() {
     val methods: MutableList<Method> = mutableListOf()
 
-    override fun visit(node: MethodDeclaration): Boolean {
-        if (node.body == null || node.body.statements().isEmpty()) {
-            return false
+    override fun visit(node: MethodDeclaration, arg: Void?) {
+        if (!node.body.isPresent || node.body.get().isEmpty) {
+            return
         }
 
-        val method = Method(fileAST.path, node.name.identifier, node.isConstructor, node.parameters().size)
-        if (node.parameters().size <= 1) {
+        val method = Method(fileAST.path, node.name.identifier, false, node.parameters.size)
+        if (node.parameters.size <= 1) {
             methods.add(method)
-            return false
+            return
         }
 
-        @Suppress("UNCHECKED_CAST")
-        val methodVisitor = MethodVisitor(node.parameters() as List<SingleVariableDeclaration>)
-        node.body.accept(methodVisitor)
+        val methodVisitor = MethodVisitor(node.parameters)
+        node.body.get().accept(methodVisitor, null)
         method.order = methodVisitor.orders
                 .map { it.value }
                 .sortedBy { it.declared }
                 .map { it.referenced }
         methods.add(method)
+    }
 
-        return false
+    override fun visit(node: ConstructorDeclaration, arg: Void?) {
+        if (node.body.isEmpty) {
+            return
+        }
+
+        val method = Method(fileAST.path, node.name.identifier, true, node.parameters.size)
+        if (node.parameters.size <= 1) {
+            methods.add(method)
+            return
+        }
+
+        val methodVisitor = MethodVisitor(node.parameters)
+        node.body.accept(methodVisitor, null)
+        method.order = methodVisitor.orders
+                .map { it.value }
+                .sortedBy { it.declared }
+                .map { it.referenced }
+        methods.add(method)
     }
 }
 
 fun takeOutMethods(fileAST: FileAST): List<Method> {
     val visitor = FileASTVisitor(fileAST)
-    fileAST.ast.accept(visitor)
+    fileAST.ast.accept(visitor, null)
     return visitor.methods
 }

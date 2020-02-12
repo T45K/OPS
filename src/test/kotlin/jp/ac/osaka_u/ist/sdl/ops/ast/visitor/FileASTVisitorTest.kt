@@ -1,13 +1,9 @@
 package jp.ac.osaka_u.ist.sdl.ops.ast.visitor
 
+import com.github.javaparser.StaticJavaParser.parse
 import jp.ac.osaka_u.ist.sdl.ops.ast.FileAST
 import jp.ac.osaka_u.ist.sdl.ops.entity.Method
-import org.eclipse.core.runtime.NullProgressMonitor
-import org.eclipse.jdt.core.dom.AST
-import org.eclipse.jdt.core.dom.ASTParser
-import org.eclipse.jdt.core.dom.CompilationUnit
 import org.junit.Assert.assertEquals
-import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.test.BeforeTest
@@ -18,7 +14,7 @@ class FileASTVisitorTest {
         const val PATH: String = "./src/test/sample/ast/Sample.java"
     }
 
-    lateinit var methods: List<Method>
+    private lateinit var methods: List<Method>
 
     @BeforeTest
     fun testTakeOutMethods() {
@@ -54,11 +50,6 @@ class FileASTVisitorTest {
     }
 
     private fun constructFileAST(path: Path): FileAST {
-        val parser: ASTParser = ASTParser.newParser(AST.JLS13)
-        val contents: ByteArray = Files.readAllBytes(path)
-        parser.setSource(String(contents).toCharArray())
-
-        val ast: CompilationUnit = parser.createAST(NullProgressMonitor()) as CompilationUnit
-        return FileAST(path, ast)
+        return FileAST(path, parse(path))
     }
 }

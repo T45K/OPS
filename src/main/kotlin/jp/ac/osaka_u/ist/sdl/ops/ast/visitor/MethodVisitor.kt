@@ -1,26 +1,25 @@
 package jp.ac.osaka_u.ist.sdl.ops.ast.visitor
 
-import org.eclipse.jdt.core.dom.ASTVisitor
-import org.eclipse.jdt.core.dom.SimpleName
-import org.eclipse.jdt.core.dom.SingleVariableDeclaration
+import com.github.javaparser.ast.NodeList
+import com.github.javaparser.ast.body.Parameter
+import com.github.javaparser.ast.expr.SimpleName
+import com.github.javaparser.ast.visitor.VoidVisitorAdapter
 
-class MethodVisitor(parameters: List<SingleVariableDeclaration>) : ASTVisitor() {
+class MethodVisitor(parameterNames: NodeList<Parameter>) : VoidVisitorAdapter<Void?>() {
     private var index = 0
     val orders: Map<String, Locations>
 
     init {
-        orders = parameters
+        orders = parameterNames
                 .mapIndexed { i, param -> param.name.identifier to Locations(i, -1) }
                 .toMap()
     }
 
-    override fun visit(node: SimpleName): Boolean {
-        val locations: Locations = orders[node.identifier] ?: return false
+    override fun visit(node: SimpleName, arg: Void?) {
+        val locations: Locations = orders[node.identifier] ?: return
         if (locations.referenced == -1) {
             locations.referenced = index++
         }
-
-        return false
     }
 }
 
