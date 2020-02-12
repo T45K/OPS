@@ -7,7 +7,7 @@ import kotlin.streams.toList
 
 fun constructFileASTs(projectPath: Path): List<FileAST> {
     return Files.walk(projectPath)
-            .filter { it.endsWith(".java") }
+            .filter { it.toString().endsWith(".java") }
             .map { FileAST(it, parse(it)) }
             .toList()
 }
