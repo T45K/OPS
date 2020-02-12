@@ -10,7 +10,7 @@ class FileASTVisitor(private val fileAST: FileAST) : VoidVisitorAdapter<Void?>()
     val methods: MutableList<Method> = mutableListOf()
 
     override fun visit(node: MethodDeclaration, arg: Void?) {
-        if (node.body.isEmpty || node.body.get().isEmpty) {
+        if (!node.body.isPresent || node.body.get().isEmpty) {
             return
         }
 
