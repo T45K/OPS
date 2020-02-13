@@ -11,6 +11,8 @@ import java.sql.Statement
 class SQL {
     private val connection: Connection = DriverManager.getConnection("jdbc:sqlite:./db.sqlite3")
             ?: throw RuntimeException("Bad db connection")
+    private val paramInsertionStatement: PreparedStatement = connection.prepareStatement(paramInsertionQuery)
+    private val methodInsertionStatement: PreparedStatement = connection.prepareStatement(methodInsertionQuery)
 
     companion object {
         const val paramInsertionQuery: String = "insert into param values(?, ?, ?)"
@@ -35,34 +37,32 @@ class SQL {
     }
 
     private fun insertParam(id: Int, declaredOrder: Int, referredOrder: Int) {
-        val statement: PreparedStatement = connection.prepareStatement(paramInsertionQuery)
-        statement.setInt(1, id)
-        statement.setInt(2, declaredOrder)
-        statement.setInt(3, referredOrder)
-        statement.executeUpdate()
-        statement.close()
+        val paramInsertionStatement: PreparedStatement = connection.prepareStatement(paramInsertionQuery)
+        paramInsertionStatement.setInt(1, id)
+        paramInsertionStatement.setInt(2, declaredOrder)
+        paramInsertionStatement.setInt(3, referredOrder)
+        paramInsertionStatement.executeUpdate()
     }
 
     private fun insertMethod(method: Method): Int {
-        val statement: PreparedStatement = connection.prepareStatement(methodInsertionQuery)
         val name = "${method.path}#${method.name}"
         val isConstructor: Int = if (method.isConstructor) 1 else 0
-        statement.setString(1, name)
-        statement.setInt(2, isConstructor)
-        statement.setInt(3, method.numOfParams)
-        statement.executeUpdate()
+        methodInsertionStatement.setString(1, name)
+        methodInsertionStatement.setInt(2, isConstructor)
+        methodInsertionStatement.setInt(3, method.numOfParams)
+        methodInsertionStatement.executeUpdate()
 
-        val generatedKey: ResultSet = statement.generatedKeys
+        val generatedKey: ResultSet = methodInsertionStatement.generatedKeys
         generatedKey.next()
         val id: Int = generatedKey.getInt(1)
-
         generatedKey.close()
-        statement.close()
 
         return id
     }
 
     fun close() {
+        paramInsertionStatement.close()
+        methodInsertionStatement.close()
         connection.close()
     }
 }
